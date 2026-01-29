@@ -1,7 +1,6 @@
 📂 Download Organizer
 
 Automatic download folder organizer built with Python.
-
 This script monitors your Downloads folder in real time and automatically organizes files into folders based on file extension and file name patterns.
 
 ✨ Features
@@ -17,6 +16,7 @@ This script monitors your Downloads folder in real time and automatically organi
 🔒 Thread-safe (one file processed at a time)
 
 🗂 Folder Structure (example)
+
 Downloads/
 ├── Documentos/
 ├── Imagens/
@@ -34,15 +34,16 @@ watchdog
 Install dependencies:
 
 pip install watchdog
+
 ▶️ How to Run
 
 Clone the repository:
 
-git clone https://github.com/seu-usuario/nome-do-repositorio.git
+git clone git clone https://github.com/lfelipechaves/download-organizer.git
 
 Enter the project folder:
 
-cd nome-do-repositorio
+cd download-organizer
 
 Run the script:
 
@@ -51,11 +52,12 @@ python main.py
 You should see:
 
 📂 Monitorando Downloads...
+
 ⏹ How to Stop
 
 Press:
-
 CTRL + C
+
 🧪 Testing
 
 Recommended way to test:
@@ -81,7 +83,6 @@ GUI (desktop app)
 Cross-platform support
 
 📌 Notes
-
 Temporary download files (.crdownload, .tmp, .part) are ignored
 
 If a file already exists, the script creates:
@@ -89,6 +90,7 @@ If a file already exists, the script creates:
 file.txt
 file_1.txt
 file_2.txt
+
 📄 License
 
 This project is open-source and free to use.
