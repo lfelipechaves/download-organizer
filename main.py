@@ -4,8 +4,17 @@ import shutil #Manipulação de Arquivos
 from watchdog.observers import Observer #Observa as pastas em tempo real
 from watchdog.events import FileSystemEventHandler
 from threading import Lock
+import logging
 
 lock = Lock() #Para executar um processo por vez
+
+#Configuração Básica LOG
+logging.basicConfig(
+  filename='download_organizer.log',
+  level=logging.DEBUG, 
+  format='%(asctime)s - %(levelname)s - %(message)s',
+  datefmt='%Y-%m-%d %H:%M:%S'
+)
 
 #Definindo a pasta monitorada
 DOWNLOADS = os.path.expanduser("~/Downloads")
@@ -48,7 +57,7 @@ class OrganizadorHandler(FileSystemEventHandler):
 
     # Ignora arquivos temporários
     if extensao in [".crdownload", ".tmp", ".part"]:
-        return
+        return logging.debug(f"Arquivos Temporários Ignorados: {caminho_arquivo}")
 
     destino = None  # sempre definido
 
@@ -65,14 +74,17 @@ class OrganizadorHandler(FileSystemEventHandler):
 
         if categoria_sugerida:
             destino = os.path.join(DOWNLOADS, categoria_sugerida)
+            logging.info(f"Categoria sugerida por IA: {categoria_sugerida} para {nome_arquivo}")
 
     #OUTROS
     if destino is None:
         destino = os.path.join(DOWNLOADS, "Outros")
+        logging.info(f"Arquivo enviado para 'Outros': {caminho_arquivo}")
 
     #Evitar mover arquivo de já foi movido
     if not os.path.exists(caminho_arquivo):
       return
+    
     #MOVE (UM ÚNICO PONTO)
     os.makedirs(destino, exist_ok=True) #Ação de criar pasta se não existir
 
@@ -81,7 +93,7 @@ class OrganizadorHandler(FileSystemEventHandler):
       destino_final = gerar_destino_unico(destino, nome_arquivo)
       shutil.move(caminho_arquivo, destino_final)
 
-    print(f"Movido para {os.path.basename(destino)}")
+    logging.info(f"Movido para {os.path.basename(destino)}")
 
 def gerar_destino_unico(destino, nome_arquivo): #Evitando Arquivos Repetidos
     base, ext = os.path.splitext(nome_arquivo)
@@ -100,12 +112,14 @@ if __name__ == "__main__":
   observer = Observer()
   observer.schedule(OrganizadorHandler(), DOWNLOADS, recursive=False)
   observer.start()
-  print("📂 Monitorando Downloads...")
+  logging.info("Observador Iniciado.")
+  logging.info("📂 Monitorando Downloads...")
 
 try:
   while True:
     time.sleep(5)
 except KeyboardInterrupt:
   observer.stop()
+  logging.info("Observador encerrado por usuário.")
 
 observer.join()
